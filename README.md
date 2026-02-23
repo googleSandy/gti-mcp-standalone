@@ -536,3 +536,141 @@ The server allows cross-origin requests by passing `OPTIONS` requests through au
 **Authentication errors:**
 - Confirm `X-Mcp-Authorization` header is set correctly
 - Check token hasn't been regenerated during redeployment
+
+## Development
+
+### Project Structure
+
+```
+.
+├── gti_mcp/
+│   ├── __init__.py
+│   ├── server.py           # Main MCP server implementation
+│   ├── utils.py            # VirusTotal API utilities
+│   └── tools/              # Tool implementations
+│       ├── __init__.py
+│       ├── collections.py  # Threat collections tools
+│       ├── files.py        # File analysis tools
+│       ├── intelligence.py # IOC search tools
+│       ├── netloc.py       # Domain/IP tools
+│       ├── threat_profiles.py
+│       └── urls.py         # URL analysis tools
+├── tests/                  # Test suite
+│   ├── conftest.py
+│   ├── test_tools.py
+│   ├── test_utils.py
+│   └── test_files_errors.py
+├── pyproject.toml          # Package configuration
+├── Dockerfile              # Cloud Run container
+├── gti-remotemcp-deploy.sh # Deployment script
+└── README.md
+```
+
+### Running Tests
+
+```bash
+# Install test dependencies
+uv pip install -e ".[test]"
+
+# Run all tests
+pytest
+
+# Run with coverage
+pytest --cov=gti_mcp
+
+# Run specific test file
+pytest tests/test_tools.py -v
+
+# Run specific test
+pytest tests/test_tools.py::test_get_file_report -v
+```
+
+### Contributing
+
+To modify or extend this server:
+
+1. **Fork and clone** the repository
+2. **Create a feature branch**: `git checkout -b feature/your-feature`
+3. **Make changes** in `gti_mcp/tools/` following existing patterns
+4. **Add tests** in `tests/` for new functionality
+5. **Run tests** to verify: `pytest`
+6. **Update README** if adding new features or changing APIs
+7. **Commit changes**: Use clear, descriptive commit messages
+8. **Push and create PR** to the original repository
+
+### Adding New Tools
+
+Example pattern for adding a new tool:
+
+```python
+# In gti_mcp/tools/your_category.py
+
+async def your_new_tool(param1: str, api_key: str) -> dict:
+    """
+    Tool description for MCP clients.
+
+    Args:
+        param1: Description of parameter
+        api_key: VirusTotal API key (required for cloud deployment)
+
+    Returns:
+        Tool result as dictionary
+    """
+    import vt
+
+    async with vt.Client(api_key) as client:
+        result = await client.your_operation(param1)
+        return result.to_dict()
+
+# Register in gti_mcp/tools/__init__.py
+```
+
+## License & Attribution
+
+This project is licensed under the **Apache License 2.0** - see the [LICENSE](LICENSE) file for details.
+
+### Original Source
+
+This is a standalone extraction of the Google Threat Intelligence MCP server from the official [mcp-security](https://github.com/google/mcp-security) repository.
+
+**Original Authors:** Google SecOps Team
+**Original Repository:** https://github.com/google/mcp-security
+**Original License:** Apache 2.0
+
+This standalone version is maintained independently but retains all original licensing and attribution.
+
+### Third-Party Libraries
+
+- [mcp](https://github.com/modelcontextprotocol/python-sdk) - Model Context Protocol SDK (MIT License)
+- [vt-py](https://github.com/VirusTotal/vt-py) - VirusTotal Python SDK (Apache 2.0)
+- [Starlette](https://www.starlette.io/) - ASGI framework (BSD License)
+- [uvicorn](https://www.uvicorn.org/) - ASGI server (BSD License)
+
+## Support
+
+### Getting Help
+
+- **Documentation:** This README and [MCP Protocol Docs](https://modelcontextprotocol.io/introduction)
+- **Issues:** Report issues at the [original mcp-security repository](https://github.com/google/mcp-security/issues)
+- **VirusTotal API:** [Official API documentation](https://developers.virustotal.com/reference/overview)
+
+### Frequently Asked Questions
+
+**Q: Do I need a paid VirusTotal account?**
+A: No, a free VirusTotal account works. Note that free accounts have lower rate limits.
+
+**Q: Can I use this with OpenAI or other LLM providers?**
+A: Yes! This is an MCP server. Any MCP-compatible client can use it, not just Claude.
+
+**Q: Is my API key secure in cloud deployment?**
+A: The server never stores API keys. Clients pass them per-call, allowing you to implement your own key management strategy.
+
+**Q: Can I deploy to platforms other than Cloud Run?**
+A: Yes! The included Dockerfile works with any container platform (AWS ECS, Azure Container Instances, etc.). Cloud Run is just the default.
+
+**Q: What's the difference between this and the original mcp-security repo?**
+A: This is a standalone extraction of just the GTI component, making it easier to deploy independently. The original repo contains multiple security tools.
+
+---
+
+**Built with ❤️ using [Model Context Protocol](https://modelcontextprotocol.io/)**
