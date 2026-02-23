@@ -2,6 +2,8 @@
 
 This is a standalone MCP (Model Context Protocol) server for interacting with Google's Threat Intelligence suite. It provides AI assistants like Claude with access to comprehensive threat intelligence capabilities through both **local development** and **production cloud deployment** modes.
 
+![GTI MCP Server Screenshot](images/gti-mcp-screenshot.png)
+
 **Key Capabilities:**
 - 🔍 Threat intelligence search (campaigns, threat actors, malware families)
 - 📁 File analysis and behavior reports
@@ -168,7 +170,7 @@ For developers who want to use GTI MCP Server with Claude Desktop, Cline, Cursor
 
 ```bash
 # Clone the repository
-git clone https://github.com/googleSandy/gti-mcp-standalone.git
+git clone https://github.com/yourusername/gti-mcp-standalone.git
 cd gti-mcp-standalone
 
 # Install with uv (recommended)
@@ -304,7 +306,7 @@ For teams who want to deploy a centralized GTI MCP service that multiple users o
 #### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/googleSandy/gti-mcp-standalone.git
+git clone https://github.com/yourusername/gti-mcp-standalone.git
 cd gti-mcp-standalone
 ```
 
@@ -674,3 +676,4 @@ A: This is a standalone extraction of just the GTI component, making it easier t
 ---
 
 **Built with ❤️ using [Model Context Protocol](https://modelcontextprotocol.io/)**
+
