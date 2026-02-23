@@ -153,3 +153,131 @@ sequenceDiagram
 - **`get_threat_profile(profile_id)`**: Get Threat Profile object.
 - **`get_threat_profile_recommendations(profile_id, limit=10)`**: Returns the list of objects associated to the given Threat Profile.
 - **`get_threat_profile_associations_timeline(profile_id)`**: Retrieves the associations timeline for the given Threat Profile.
+
+## Quick Start (Local Development)
+
+For developers who want to use GTI MCP Server with Claude Desktop, Cline, Cursor, or other MCP clients.
+
+### Prerequisites
+
+- Python 3.11 or higher
+- [uv](https://docs.astral.sh/uv/) package manager
+- VirusTotal API key ([get one free](https://www.virustotal.com/))
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/yourusername/gti-mcp-standalone.git
+cd gti-mcp-standalone
+
+# Install with uv (recommended)
+uv tool install -e .
+
+# Or run directly without installation
+uv run gti_mcp
+```
+
+### API Key Setup
+
+Set up the `VT_APIKEY` environment variable:
+
+**macOS/Linux:**
+```bash
+export VT_APIKEY="your-virustotal-api-key"
+```
+
+**Windows PowerShell:**
+```powershell
+$Env:VT_APIKEY = "your-virustotal-api-key"
+```
+
+**Permanent setup (recommended):**
+
+Add the export command to your shell profile (`~/.bashrc`, `~/.zshrc`, or `~/.bash_profile`):
+
+```bash
+echo 'export VT_APIKEY="your-virustotal-api-key"' >> ~/.zshrc
+source ~/.zshrc
+```
+
+### MCP Client Configuration
+
+#### Claude Desktop
+
+Edit `~/.claude/claude_desktop_config.json`:
+
+```json
+{
+  "mcpServers": {
+    "gti": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/absolute/path/to/gti-mcp-standalone",
+        "run",
+        "gti_mcp"
+      ],
+      "env": {
+        "VT_APIKEY": "${VT_APIKEY}"
+      }
+    }
+  }
+}
+```
+
+**Note for macOS users:** If you installed `uv` using the standalone installer, use the full path to the uv binary (e.g., `/Users/yourusername/.local/bin/uv`) instead of just `uv`.
+
+#### Cline
+
+Edit `.cline/mcp.json` or use the settings UI:
+
+```json
+{
+  "mcpServers": {
+    "gti": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/absolute/path/to/gti-mcp-standalone",
+        "run",
+        "gti_mcp"
+      ],
+      "env": {
+        "VT_APIKEY": "${VT_APIKEY}"
+      }
+    }
+  }
+}
+```
+
+#### Cursor
+
+Edit `.cursor/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "gti": {
+      "command": "uv",
+      "args": [
+        "--directory",
+        "/absolute/path/to/gti-mcp-standalone",
+        "run",
+        "gti_mcp"
+      ],
+      "env": {
+        "VT_APIKEY": "${VT_APIKEY}"
+      }
+    }
+  }
+}
+```
+
+### Verification
+
+1. Restart your MCP client (Claude Desktop, Cline, or Cursor)
+2. Check that the GTI server appears in the MCP tools list
+3. Try a simple query: "Check the reputation of google.com using GTI"
+
+If everything is working, you should see results from Google Threat Intelligence!
